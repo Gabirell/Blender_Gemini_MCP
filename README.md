@@ -48,7 +48,7 @@ Windows:
 Open the Command Prompt.
 
 Navigate to Blender's Python binary directory. It's usually located at:
-C:\Program Files\Blender Foundation\Blender <version>\<version>\python\bin
+C:\Program Files\Blender Foundation\Blender <version>\<version>\python\bin (If you have Blender.exe in another location, please ignore the Blender Foundation folder and find where python.exe is intalled inside your blender version.)
 
 Run the following commands:
 
@@ -101,29 +101,3 @@ Speak your prompt clearly.
 
 The addon will automatically send the recognized text to Gemini and display the response.
 
-How to upload to GitHub
-Create a GitHub account: If you don't have one, sign up at https://github.com/.
-
-Create a new repository:
-
-Click on the "+" icon in the top right corner and select "New repository".
-
-Give your repository a name (e.g., blender-gemini-assistant).
-
-Add a description (optional).
-
-Choose to make it public or private.
-
-Click on "Create repository".
-
-Upload the files:
-
-On the repository page, click on "Add file" and select "Upload files".
-
-Drag and drop the Gemini_Assistant.py and README.md files into the upload area.
-
-Add a commit message (e.g., "Initial commit").
-
-Click on "Commit changes".
-
-Now you have a GitHub repository for your Blender addon that you can share with others!
