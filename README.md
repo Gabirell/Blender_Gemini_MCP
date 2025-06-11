@@ -1,87 +1,100 @@
 Blender Gemini MCP Assistant
 
-This Blender addon integrates Google's Gemini Pro model to provide assistance through text and voice commands directly within the Blender interface. It is structured as a multi-file addon for easy installation and maintenance.
+This addon integrates Google's Gemini AI directly into Blender, allowing you to use natural language to generate and execute Python scripts, ask for help, and control the 3D environment.
 
 Features:
 
-    Text-based prompts: Type in your questions or commands and get a response from Gemini.
+Blender-Aware Context: Gemini is instructed to act as a Blender expert. It knows it's inside Blender and provides relevant answers and code.
 
-    Voice recognition: Use your microphone to speak your commands to Gemini.
+Code Execution: When Gemini generates a Python script, an "Execute Code" button appears, allowing you to run the script and modify your scene directly.
 
-    Seamless integration: The addon is accessible through a panel in the 3D Viewport's sidebar.
+Dynamic Model Selection: Choose any available Gemini model from a list that updates automatically when you enter your API key. Always use the latest and most powerful models.
 
-Installation
-    1. Download the Addon ZIP
-    Download the Blender_Gemini_MCP_Plugin.zip file from the Releases page of this repository.
+Popup Window: Press Alt+G anywhere in the 3D View to open a quick prompt window, so you don't need to keep the sidebar open.
 
-    2. Install the Addon in Blender
-    Open Blender and go to Edit > Preferences > Add-ons.
+Installation:
 
-    Click on Install....
+1. Download the Addon
+Go to the Releases page of this repository.
 
-    Navigate to and select the downloaded Blender_Gemini_MCP_Plugin.zip file. Do not unzip it.
+Download the latest Blender_Gemini_MCP_Plugin.zip file.
 
-    Enable the addon by checking the box next to "3D View: Gemini MCP Assistant".
+2. Install the Addon in Blender
+Open Blender and go to Edit > Preferences > Add-ons.
 
-Configuration
-    1. Get a Gemini API Key
-    Go to Google AI Studio and create an API key.
+Click Install....
 
-    2. Add the API Key to the Addon
-    In Blender, open the 3D Viewport and press N to open the sidebar.
+Navigate to and select the Blender_Gemini_MCP_Plugin.zip file you just downloaded. Do not unzip it.
 
-    Go to the "Gemini MCP" tab.
+Enable the addon by checking the box next to "Gemini MCP Assistant".
 
-    Paste your Gemini API key into the "API Key" field.
+3. Install Required Python Libraries
+This addon will not work without its required third-party libraries. You must install them into Blender's internal Python environment.
 
-    3. Install Required Python Libraries
-    This addon requires third-party Python libraries to function. You must install them into Blender's internal Python environment.
+How to Install:
 
-How to Install Libraries:
-
-Find the path to Blender's Python executable. (Remember to change the version number to your own and to find the correct path if you installed it elsewhere)
+Find the path to Blender's Python executable.
 
 Windows: C:\Program Files\Blender Foundation\Blender <version>\<version>\python\bin
 
 macOS: /Applications/Blender.app/Contents/Resources/<version>/python/bin
 
-Linux: /<blender_directory>/<version>/python/bin
+Linux: /<blender_install_dir>/<version>/python/bin
 
 Open your system's command line (Command Prompt on Windows, Terminal on macOS/Linux).
 
-Navigate to the directory from step 1.
+Navigate to the directory from step 1 using the cd command. For example, on Windows:
 
-Run the following commands:
+cd "C:\Program Files\Blender Foundation\Blender 4.1\4.1\python\bin"
+
+Run the following commands to install the libraries:
 
 # For Windows
 python.exe -m pip install --upgrade pip
-python.exe -m pip install google-generativeai
-python.exe -m pip install SpeechRecognition
-python.exe -m pip install PyAudio
+python.exe -m pip install google-generativeai SpeechRecognition PyAudio
 
-# For macOS/Linux
-./python3.10 -m pip install --upgrade pip
-./python3.10 -m pip install google-generativeai
-./python3.10 -m pip install SpeechRecognition
-./python3.10 -m pip install PyAudio
+# For macOS / Linux
+./python3.11 -m pip install --upgrade pip
+./python3.11 -m pip install google-generativeai SpeechRecognition PyAudio
 
-Note: The exact python executable name (python.exe or ./python3.10) may vary depending on your Blender and OS version.
+Note: The Python executable name (python.exe, ./python3.11, etc.) might differ slightly depending on your Blender version.
 
-Usage
-Text Input:
+Configuration:
 
-Type your prompt in the text field.
+Get a Gemini API Key:
 
-Click "Send Prompt".
+Go to Google AI Studio and create a free API key.
 
-The response will appear in the box below.
+Set up the Addon in Blender:
 
-Voice Input:
+Go to Edit > Preferences > Add-ons.
 
-Click "Start Listening". The status will change to "Listening...".
+Find "Gemini MCP Assistant" in the list and expand it.
 
-Speak your prompt clearly into your microphone.
+Paste your API key into the "Gemini API Key" field.
 
-The addon will automatically transcribe your speech, send it to Gemini, and display the response.
+The list of available models will refresh automatically. You can select your preferred model from the dropdown menu.
 
-Hope you enjoy it!v
+How to Use:
+
+Main Panel:
+Open the 3D Viewport's sidebar by pressing N.
+
+Go to the "Gemini MCP" tab.
+
+Type your prompt (e.g., "Create a sphere and add a subdivision surface modifier") and click "Send Prompt".
+
+The response will appear in the panel. If it contains code, the "Execute Code" button will appear.
+
+Popup Window:
+
+In the 3D Viewport, press Alt+G.
+
+A small window will pop up. Type your prompt there and press Enter or click "OK".
+
+The response will be processed and will appear in the main panel.
+
+Code Execution
+After Gemini provides a response containing a Python script, click the Execute Code button that appears at the bottom of the panel.
+
+The script will run immediately, affecting your current scene.
