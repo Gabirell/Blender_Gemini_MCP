@@ -68,9 +68,17 @@ class GEMINI_OT_send_prompt(bpy.types.Operator):
                 else:
                     props.response = "Task finished, but no result was returned. Check the console."
                 
+                # --- CORRECTION ---
+                # Force all UI regions to update to show the new response immediately,
+                # without needing a mouse move.
+                for window in context.window_manager.windows:
+                    for area in window.screen.areas:
+                        area.tag_redraw()
+
                 context.window_manager.event_timer_remove(self._timer)
                 return {'FINISHED'}
         
+        # Allow other events to pass through while waiting
         return {'PASS_THROUGH'}
 
 class GEMINI_OT_execute_code(bpy.types.Operator):
