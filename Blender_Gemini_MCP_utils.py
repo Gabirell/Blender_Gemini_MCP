@@ -18,8 +18,12 @@ def get_available_models(api_key):
     try:
         genai.configure(api_key=api_key)
         models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        # We only want the model names, not the 'models/' prefix
-        return [(model.replace("models/", ""), model.replace("models/", "").replace("-"," ").title(), "") for model in models]
+        
+        # --- CORRECTION ---
+        # The first item in the tuple (the identifier) must be the full model name.
+        # The second item (the label) can be the user-friendly version.
+        return [(model, model.replace("models/", "").replace("-"," ").title(), "") for model in models]
+    
     except Exception as e:
         print(f"Could not fetch models: {e}")
         return []
@@ -31,10 +35,12 @@ def send_prompt_to_gemini(api_key, model_name, prompt_text):
         
     try:
         genai.configure(api_key=api_key)
+        # model_name now correctly contains the "models/" prefix.
         model = genai.GenerativeModel(model_name, system_instruction=SYSTEM_PROMPT)
         response = model.generate_content(prompt_text)
         return response.text
     except Exception as e:
+        # Return the actual error from the API for better debugging.
         return f"An API error occurred: {e}"
 
 def extract_python_code(text):
