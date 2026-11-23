@@ -1,100 +1,52 @@
-Blender Gemini MCP Assistant
+# Gemini MCP Assistant for Blender
 
-This addon integrates Google's Gemini AI directly into Blender, allowing you to use natural language to generate and execute Python scripts, ask for help, and control the 3D environment.
+Ask **Google Gemini** anything about Blender — right inside the 3D View — and run the Python it writes with one click.
+**Free:** you use **your own free Gemini API key**. No extra installs, no account with us.
 
-Features:
+> Version **2.0** · Blender **3.0 → 4.x** (4.2+ as an Extension) · GPL-3.0-or-later · by [Gabriel Netto](https://gabrielnetto.com)
 
-Blender-Aware Context: Gemini is instructed to act as a Blender expert. It knows it's inside Blender and provides relevant answers and code.
+## What it does
+- **Sidebar panel** (`N` → *Gemini*) and a quick **popup** (`Alt + G`) to ask questions in any language.
+- **Runs the Python Gemini writes** with a *Run code* button — an **undo step** is created first (`Ctrl + Z` to go back).
+- **Your own free key:** paste it once in Preferences; it stays on your computer.
+- **Always on current models:** when Blender starts (once a day) it checks which Gemini models your key can use.
+  Retired models disappear from the list; if yours is retired it **switches to the recommended one and tells you** —
+  you can change the model anytime (or turn the automatic switch off).
+- **Never stuck:** if a model is busy or out of free quota, the next one answers (and the answer says which).
+- **No dependencies:** talks to Gemini with Python's standard library — nothing to `pip install`.
 
-Code Execution: When Gemini generates a Python script, an "Execute Code" button appears, allowing you to run the script and modify your scene directly.
+## Install
+**Blender 4.2 or newer**
+1. Download `gemini_mcp_assistant-2.0.0.zip` from **Releases**.
+2. *Edit → Preferences → Get Extensions → ⌄ (top right) → Install from Disk…* → choose the zip.
 
-Dynamic Model Selection: Choose any available Gemini model from a list that updates automatically when you enter your API key. Always use the latest and most powerful models.
+**Blender 3.0 – 4.1**
+1. Download `gemini_mcp_assistant-2.0.0-blender3-4.1.zip` from **Releases**.
+2. *Edit → Preferences → Add-ons → Install…* → choose the zip → enable **Gemini MCP Assistant**.
 
-Popup Window: Press Alt+G anywhere in the 3D View to open a quick prompt window, so you don't need to keep the sidebar open.
+## Get your free key (1 minute)
+1. Open **[aistudio.google.com/apikey](https://aistudio.google.com/apikey)** and sign in with Google.
+2. **Create API key** — use a project **without billing** to stay on the free tier.
+3. In Blender: *Preferences → Add-ons → Gemini MCP Assistant* → paste it in **Gemini API Key**.
+   The model list loads by itself; the ★ one is recommended.
 
-Installation:
+## Use it
+- `N` → **Gemini** tab → type → **Send to Gemini**. Or press **`Alt + G`** in the 3D View.
+- Example: *"Add 20 cubes in a spiral, each with a random emissive color"* → **Run code**.
+- Always read the code before running it. `Ctrl + Z` undoes it.
 
-1. Download the Addon
-Go to the Releases page of this repository.
+## Privacy
+Your prompts go **directly from your computer to Google's Gemini API** with your key (Google's terms apply).
+Nothing goes through any other server. The key is saved in Blender's preferences on your machine.
 
-Download the latest Blender_Gemini_MCP_Plugin.zip file.
+## Support this project
+If it saves you time, you can help keep it going:
+**[☕ Buy me a coffee](https://buymeacoffee.com/js4qwvqfkgr)** · [More tools, games and art: gabrielnetto.com](https://gabrielnetto.com) · ⭐ Star the repo
 
-2. Install the Addon in Blender
-Open Blender and go to Edit > Preferences > Add-ons.
+## Changelog
+- **2.0.0** — no `google-generativeai` dependency; automatic daily model check (retired models removed, auto-switch with notice,
+  choice remembered); busy/quota fallback; undo step before running code; Blender 4.2+ Extension manifest; GPL-3.0-or-later.
+- 1.4.0 — model selector, popup (Alt+G), threaded requests.
 
-Click Install....
-
-Navigate to and select the Blender_Gemini_MCP_Plugin.zip file you just downloaded. Do not unzip it.
-
-Enable the addon by checking the box next to "Gemini MCP Assistant".
-
-3. Install Required Python Libraries
-This addon will not work without its required third-party libraries. You must install them into Blender's internal Python environment.
-
-How to Install:
-
-Find the path to Blender's Python executable.
-
-Windows: C:\Program Files\Blender Foundation\Blender <version>\<version>\python\bin
-
-macOS: /Applications/Blender.app/Contents/Resources/<version>/python/bin
-
-Linux: /<blender_install_dir>/<version>/python/bin
-
-Open your system's command line (Command Prompt on Windows, Terminal on macOS/Linux).
-
-Navigate to the directory from step 1 using the cd command. For example, on Windows:
-
-cd "C:\Program Files\Blender Foundation\Blender 4.1\4.1\python\bin"
-
-Run the following commands to install the libraries:
-
-# For Windows
-python.exe -m pip install --upgrade pip
-python.exe -m pip install google-generativeai SpeechRecognition PyAudio
-
-# For macOS / Linux
-./python3.11 -m pip install --upgrade pip
-./python3.11 -m pip install google-generativeai SpeechRecognition PyAudio
-
-Note: The Python executable name (python.exe, ./python3.11, etc.) might differ slightly depending on your Blender version.
-
-Configuration:
-
-Get a Gemini API Key:
-
-Go to Google AI Studio and create a free API key.
-
-Set up the Addon in Blender:
-
-Go to Edit > Preferences > Add-ons.
-
-Find "Gemini MCP Assistant" in the list and expand it.
-
-Paste your API key into the "Gemini API Key" field.
-
-The list of available models will refresh automatically. You can select your preferred model from the dropdown menu.
-
-How to Use:
-
-Main Panel:
-Open the 3D Viewport's sidebar by pressing N.
-
-Go to the "Gemini MCP" tab.
-
-Type your prompt (e.g., "Create a sphere and add a subdivision surface modifier") and click "Send Prompt".
-
-The response will appear in the panel. If it contains code, the "Execute Code" button will appear.
-
-Popup Window:
-
-In the 3D Viewport, press Alt+G.
-
-A small window will pop up. Type your prompt there and press Enter or click "OK".
-
-The response will be processed and will appear in the main panel.
-
-Code Execution
-After Gemini provides a response containing a Python script, click the Execute Code button that appears at the bottom of the panel.
-
-The script will run immediately, affecting your current scene.
+## License
+GPL-3.0-or-later © 2025-2026 Gabriel Netto. See [LICENSE](LICENSE).

@@ -1,0 +1,21 @@
+schema_version = "1.0.0"
+
+id = "gemini_mcp_assistant"
+version = "2.0.0"
+name = "Gemini MCP Assistant"
+tagline = "Ask Google Gemini inside Blender and run the Python it writes"
+maintainer = "Gabriel Netto"
+type = "add-on"
+website = "https://github.com/Gabirell/Blender_Gemini_MCP"
+tags = ["3D View", "User Interface"]
+
+blender_version_min = "4.2.0"
+
+license = ["SPDX:GPL-3.0-or-later"]
+copyright = ["2025-2026 Gabriel Netto"]
+
+[permissions]
+network = "Send your prompts to the Google Gemini API using your own API key"
+
+[build]
+paths_exclude_pattern = ["__pycache__/", "/.git/", "/.github/", "*.zip", "/docs/", "build.sh"]
