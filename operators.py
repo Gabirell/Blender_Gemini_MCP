@@ -22,6 +22,7 @@ class GeminiProperties(bpy.types.PropertyGroup):
 def _ask(key, model, prompt, auto_switch, out, fallbacks=()):
     """Background thread. Busy model → try the next models (answer says which one replied).
     Retired model → switch to the recommended one (remembered) and answer."""
+    tried = []                                              # (model, reason) shown if everything fails
     try:
         try:
             out["text"] = api.generate(key, model, prompt)
@@ -30,6 +31,7 @@ def _ask(key, model, prompt, auto_switch, out, fallbacks=()):
         except api.GeminiError as busy:
             if busy.kind not in ("busy", "quota"):          # free quotas are per model → another model may still answer
                 raise
+            tried.append((model, busy.kind))
             for alt in [m for m in fallbacks if m != model][:3]:
                 try:
                     out["text"] = api.generate(key, alt, prompt)
@@ -37,6 +39,7 @@ def _ask(key, model, prompt, auto_switch, out, fallbacks=()):
                     out["busy_fallback"] = (model, alt)
                     return
                 except api.GeminiError as e3:
+                    tried.append((alt, e3.kind))
                     if e3.kind not in ("busy", "quota"):
                         break
             raise busy
@@ -59,7 +62,14 @@ def _ask(key, model, prompt, auto_switch, out, fallbacks=()):
                  "billing": "This key's Google project has billing problems. Create a key in a project without billing (free tier).",
                  "busy": "Google is busy right now — try again in a moment.",
                  "gone": "This model is no longer available — choose another one in Preferences."}
-        out["error"] = f"{e}\n\n{hints.get(e.kind, '')}".strip()
+        if len(tried) > 1:
+            why = {"busy": "busy (high demand)", "quota": "free daily quota used up"}
+            lines = "\n".join(f"• {m}: {why.get(k, k)}" for m, k in tried)
+            out["error"] = (f"No model could answer right now. Tried:\n{lines}\n\n"
+                            "Google is busy and/or your free quota for today is used up. Try again in a few minutes — "
+                            "the free quota resets every day.")
+        else:
+            out["error"] = f"{e}\n\n{hints.get(e.kind, '')}".strip()
 
 
 class GEMINI_OT_send_prompt(bpy.types.Operator):
