@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "gemini_mcp_assistant"
-version = "2.1.0"
+version = "2.2.0"
 name = "Gemini MCP Assistant"
 tagline = "Ask Google Gemini inside Blender and run the Python it writes"
 maintainer = "Gabriel Netto"

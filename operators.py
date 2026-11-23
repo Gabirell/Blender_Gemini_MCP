@@ -184,6 +184,23 @@ class GEMINI_OT_popup_window(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class GEMINI_PT_footer(bpy.types.Panel):
+    """Small credit under the Gemini panel (link to the author's website)."""
+    bl_idname = "GEMINI_PT_footer"
+    bl_label = ""
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Gemini'
+    bl_options = {'HIDE_HEADER'}
+    bl_order = 100
+
+    def draw(self, context):
+        row = self.layout.row(align=True)
+        row.scale_y = 0.9
+        row.operator("wm.url_open", text="gabrielnetto.com", icon='URL').url = "https://gabrielnetto.com"
+        row.operator("wm.url_open", text="", icon='FUND').url = "https://buymeacoffee.com/js4qwvqfkgr"
+
+
 class GEMINI_PT_panel(bpy.types.Panel):
     bl_idname = "GEMINI_PT_panel"
     bl_label = "Gemini MCP Assistant"

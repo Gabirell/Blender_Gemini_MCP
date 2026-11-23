@@ -3,7 +3,7 @@
 Ask **Google Gemini** anything about Blender — right inside the 3D View — and run the Python it writes with one click.
 **Free:** you use **your own free Gemini API key**. No extra installs, no account with us.
 
-> Version **2.1** · Blender **3.0 → 4.x** (4.2+ as an Extension) · GPL-3.0-or-later · by [Gabriel Netto](https://gabrielnetto.com)
+> Version **2.2** · Blender **3.0 → 4.x** (4.2+ as an Extension) · GPL-3.0-or-later · by [Gabriel Netto](https://gabrielnetto.com)
 
 ## What it does
 - **Sidebar panel** (`N` → *Gemini*) and a quick **popup** (`Alt + G`) to ask questions in any language.
@@ -17,11 +17,11 @@ Ask **Google Gemini** anything about Blender — right inside the 3D View — an
 
 ## Install
 **Blender 4.2 or newer**
-1. Download `gemini_mcp_assistant-2.1.0.zip` from **Releases**.
+1. Download `gemini_mcp_assistant-2.2.0.zip` from **Releases**.
 2. *Edit → Preferences → Get Extensions → ⌄ (top right) → Install from Disk…* → choose the zip.
 
 **Blender 3.0 – 4.1**
-1. Download `gemini_mcp_assistant-2.1.0-blender3-4.1.zip` from **Releases**.
+1. Download `gemini_mcp_assistant-2.2.0-blender3-4.1.zip` from **Releases**.
 2. *Edit → Preferences → Add-ons → Install…* → choose the zip → enable **Gemini MCP Assistant**.
 
 ## Get your free key (1 minute)
@@ -36,6 +36,10 @@ Ask **Google Gemini** anything about Blender — right inside the 3D View — an
 - Example: *"Add 20 cubes in a spiral, each with a random emissive color"* → **Run code**.
 - Always read the code before running it. `Ctrl + Z` undoes it.
 
+## Uninstall
+*Preferences → Add-ons → Gemini MCP Assistant → **Uninstall this add-on…*** → confirm. Your saved API key is erased first, then the add-on is removed.
+(Or use Blender's own *Remove* / *Uninstall* in the add-on/extension list.)
+
 ## Privacy
 Your prompts go **directly from your computer to Google's Gemini API** with your key (Google's terms apply).
 Nothing goes through any other server. The key is saved in Blender's preferences on your machine.
@@ -45,6 +49,7 @@ If it saves you time, you can help keep it going:
 **[☕ Buy me a coffee](https://buymeacoffee.com/js4qwvqfkgr)** · [More tools, games and art: gabrielnetto.com](https://gabrielnetto.com) · ⭐ Star the repo
 
 ## Changelog
+- **2.2.0** — **Uninstall** button (Preferences → Add-ons → Gemini MCP Assistant → *Uninstall this add-on…*; erases your saved key first); link to gabrielnetto.com in the panel and preferences.
 - **2.1.0** — after the answer: big **Run code in Blender** button right under *Send*, **Copy answer / Copy code** buttons, explanation shown separately and the **code collapsed** (click to open); long prompts are shown in full under the field.
 - **2.0.0** — no `google-generativeai` dependency; automatic daily model check (retired models removed, auto-switch with notice,
   choice remembered); busy/quota fallback; undo step before running code; Blender 4.2+ Extension manifest; GPL-3.0-or-later.

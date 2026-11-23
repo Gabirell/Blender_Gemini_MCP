@@ -158,6 +158,14 @@ class GeminiAddonPreferences(bpy.types.AddonPreferences):
             col.label(text="Last model check: " + time.strftime("%Y-%m-%d %H:%M", time.localtime(self.last_check)))
         col.separator()
         col.label(text="Your prompts are sent to Google Gemini with your key. Review AI code before running it.", icon='LOCKED')
+        col.separator()
+        row = col.row(align=True)
+        row.operator("wm.url_open", text="Made by Gabriel Netto · gabrielnetto.com", icon='URL').url = "https://gabrielnetto.com"
+        row.operator("wm.url_open", text="Buy me a coffee", icon='FUND').url = "https://buymeacoffee.com/js4qwvqfkgr"
+        col.separator()
+        danger = col.row()
+        danger.alert = True
+        danger.operator("gemini.uninstall_addon", text="Uninstall this add-on…", icon='TRASH')
 
 
 class GEMINI_OT_refresh_models(bpy.types.Operator):
@@ -171,4 +179,51 @@ class GEMINI_OT_refresh_models(bpy.types.Operator):
             return {'CANCELLED'}
         refresh_models("manual")
         self.report({'INFO'}, "Checking available models…")
+        return {'FINISHED'}
+
+
+def _uninstall_now(pkg):
+    """Runs from a timer AFTER the button's operator has finished (removing an add-on from inside its own
+    operator would unregister running code and crash Blender)."""
+    try:
+        if pkg.startswith("bl_ext."):                   # Blender 4.2+ Extension
+            repo_module, pkg_id = pkg.split(".")[1], pkg.split(".")[-1]
+            repo = next(r for r in bpy.context.preferences.extensions.repos if r.module == repo_module)
+            directory = repo.custom_directory if getattr(repo, "use_custom_directory", False) else repo.directory
+            bpy.ops.extensions.package_uninstall(repo_directory=directory, pkg_id=pkg_id)
+        else:                                           # Blender 3.0–4.1 add-on
+            import os, addon_utils
+            mod = next((m for m in addon_utils.modules() if m.__name__ == pkg), None)
+            folder = os.path.dirname(mod.__file__) if mod else None
+            addon_utils.disable(pkg, default_set=True)
+            try:
+                bpy.ops.preferences.addon_remove(module=pkg)
+            except Exception:                           # Blender may only fail to redraw a window
+                if folder and os.path.exists(folder):
+                    import shutil
+                    shutil.rmtree(folder)
+        print("Gemini MCP Assistant removed. Thanks for trying it! — https://gabrielnetto.com")
+    except Exception as e:
+        print(f"Gemini MCP Assistant: automatic uninstall failed ({e}). Use Preferences → Add-ons → Remove.")
+    return None
+
+
+class GEMINI_OT_uninstall_addon(bpy.types.Operator):
+    bl_idname = "gemini.uninstall_addon"
+    bl_label = "Uninstall Gemini MCP Assistant?"
+    bl_description = "Erase your saved API key and remove this add-on from Blender"
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_confirm(self, event)
+
+    def execute(self, context):
+        pkg = __package__
+        try:                                            # privacy: never leave the key behind
+            prefs = addon_prefs(context)
+            prefs.api_key = ""
+            prefs.models_json = "[]"
+        except Exception:
+            pass
+        bpy.app.timers.register(lambda: _uninstall_now(pkg), first_interval=0.2)
+        self.report({'INFO'}, "Removing Gemini MCP Assistant… Thanks for trying it! — gabrielnetto.com")
         return {'FINISHED'}

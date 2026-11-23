@@ -5,7 +5,7 @@
 bl_info = {
     "name": "Gemini MCP Assistant",
     "author": "Gabriel Netto",
-    "version": (2, 1, 0),
+    "version": (2, 2, 0),
     "blender": (3, 0, 0),
     "location": "View3D > Sidebar (N) > Gemini, or Alt+G",
     "description": "Ask Gemini about Blender and run the Python it writes. Uses your own free API key; models are checked automatically.",
@@ -25,8 +25,10 @@ classes = (
     operators.GEMINI_OT_copy,
     operators.GEMINI_OT_popup_window,
     operators.GEMINI_PT_panel,
+    operators.GEMINI_PT_footer,
     preferences.GeminiAddonPreferences,
     preferences.GEMINI_OT_refresh_models,
+    preferences.GEMINI_OT_uninstall_addon,
 )
 addon_keymaps = []
 
