@@ -95,6 +95,12 @@ def generate(api_key, model, prompt, system=SYSTEM_PROMPT):
     return "".join(p.get("text", "") for p in cands[0].get("content", {}).get("parts", []))
 
 
+def explanation_text(text):
+    """The answer without its code blocks (what Gemini explains around the code)."""
+    t = re.sub(r"```(?:python|py)?\s*\n.*?```", "", text or "", flags=re.DOTALL)
+    return re.sub(r"\n{3,}", "\n\n", t).strip()
+
+
 def extract_python_code(text):
     m = re.search(r"```(?:python|py)\s*\n(.*?)```", text or "", re.DOTALL)
     return m.group(1).strip() if m else None

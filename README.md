@@ -3,7 +3,7 @@
 Ask **Google Gemini** anything about Blender — right inside the 3D View — and run the Python it writes with one click.
 **Free:** you use **your own free Gemini API key**. No extra installs, no account with us.
 
-> Version **2.0** · Blender **3.0 → 4.x** (4.2+ as an Extension) · GPL-3.0-or-later · by [Gabriel Netto](https://gabrielnetto.com)
+> Version **2.1** · Blender **3.0 → 4.x** (4.2+ as an Extension) · GPL-3.0-or-later · by [Gabriel Netto](https://gabrielnetto.com)
 
 ## What it does
 - **Sidebar panel** (`N` → *Gemini*) and a quick **popup** (`Alt + G`) to ask questions in any language.
@@ -17,11 +17,11 @@ Ask **Google Gemini** anything about Blender — right inside the 3D View — an
 
 ## Install
 **Blender 4.2 or newer**
-1. Download `gemini_mcp_assistant-2.0.0.zip` from **Releases**.
+1. Download `gemini_mcp_assistant-2.1.0.zip` from **Releases**.
 2. *Edit → Preferences → Get Extensions → ⌄ (top right) → Install from Disk…* → choose the zip.
 
 **Blender 3.0 – 4.1**
-1. Download `gemini_mcp_assistant-2.0.0-blender3-4.1.zip` from **Releases**.
+1. Download `gemini_mcp_assistant-2.1.0-blender3-4.1.zip` from **Releases**.
 2. *Edit → Preferences → Add-ons → Install…* → choose the zip → enable **Gemini MCP Assistant**.
 
 ## Get your free key (1 minute)
@@ -32,6 +32,7 @@ Ask **Google Gemini** anything about Blender — right inside the 3D View — an
 
 ## Use it
 - `N` → **Gemini** tab → type → **Send to Gemini**. Or press **`Alt + G`** in the 3D View.
+- When the answer arrives, **Run code in Blender** appears right under *Send*; the code itself is folded (▸ Code) — open it to read it, or use **Copy code**.
 - Example: *"Add 20 cubes in a spiral, each with a random emissive color"* → **Run code**.
 - Always read the code before running it. `Ctrl + Z` undoes it.
 
@@ -44,6 +45,7 @@ If it saves you time, you can help keep it going:
 **[☕ Buy me a coffee](https://buymeacoffee.com/js4qwvqfkgr)** · [More tools, games and art: gabrielnetto.com](https://gabrielnetto.com) · ⭐ Star the repo
 
 ## Changelog
+- **2.1.0** — after the answer: big **Run code in Blender** button right under *Send*, **Copy answer / Copy code** buttons, explanation shown separately and the **code collapsed** (click to open); long prompts are shown in full under the field.
 - **2.0.0** — no `google-generativeai` dependency; automatic daily model check (retired models removed, auto-switch with notice,
   choice remembered); busy/quota fallback; undo step before running code; Blender 4.2+ Extension manifest; GPL-3.0-or-later.
 - 1.4.0 — model selector, popup (Alt+G), threaded requests.

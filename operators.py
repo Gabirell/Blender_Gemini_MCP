@@ -16,6 +16,7 @@ class GeminiProperties(bpy.types.PropertyGroup):
     response: bpy.props.StringProperty(name="Response", default="")
     popup_prompt: bpy.props.StringProperty(name="Popup Prompt", default="")
     busy: bpy.props.BoolProperty(default=False)
+    show_code: bpy.props.BoolProperty(name="Show code", default=False)
 
 
 def _ask(key, model, prompt, auto_switch, out, fallbacks=()):
@@ -109,6 +110,7 @@ class GEMINI_OT_send_prompt(bpy.types.Operator):
             context.preferences.is_dirty = True
             self.report({'INFO'}, prefs.notice)
         props.response = out.get("text") or out.get("error") or "No answer."
+        props.show_code = False
         if "busy_fallback" in out:
             props.response = f"(Answered by {out['busy_fallback'][1]} — {out['busy_fallback'][0]} was busy or out of free quota.)\n\n" + props.response
         for win in context.window_manager.windows:
@@ -137,6 +139,34 @@ class GEMINI_OT_execute_code(bpy.types.Operator):
             return {'CANCELLED'}
         self.report({'INFO'}, "Code executed. Ctrl+Z to undo.")
         return {'FINISHED'}
+
+
+class GEMINI_OT_copy(bpy.types.Operator):
+    bl_idname = "gemini.copy"
+    bl_label = "Copy"
+    bl_description = "Copy Gemini's answer (or only its code) to the clipboard"
+
+    what: bpy.props.EnumProperty(items=[('ANSWER', "Answer", ""), ('CODE', "Code", "")], default='ANSWER', options={'SKIP_SAVE'})
+
+    def execute(self, context):
+        resp = context.scene.gemini_properties.response
+        text = api.extract_python_code(resp) if self.what == 'CODE' else resp
+        if not text:
+            self.report({'WARNING'}, "Nothing to copy.")
+            return {'CANCELLED'}
+        context.window_manager.clipboard = text
+        self.report({'INFO'}, "Code copied." if self.what == 'CODE' else "Answer copied.")
+        return {'FINISHED'}
+
+
+def _wrapped(layout, text, width, icon=None):
+    col = layout.column(align=True)
+    first = True
+    for line in (text or "").split("\n"):
+        for w in (textwrap.wrap(line, width=width, replace_whitespace=False) or [""]):
+            col.label(text=w, icon=icon if (icon and first) else 'NONE')
+            first = False
+    return col
 
 
 class GEMINI_OT_popup_window(bpy.types.Operator):
@@ -178,18 +208,39 @@ class GEMINI_PT_panel(bpy.types.Panel):
             box = layout.box()
             for line in textwrap.wrap(prefs.notice, max(20, int(context.region.width / 7))):
                 box.label(text=line)
+        width = max(10, int(context.region.width / 7))
         layout.prop(props, "prompt", text="")
-        sub = layout.row()
-        sub.enabled = not props.busy
-        sub.operator("gemini.send_prompt", icon='PLAY' if not props.busy else 'TIME')
-        if props.response:
+        if len(props.prompt) > width - 4:                       # Blender fields are single-line → show the whole prompt
             box = layout.box()
-            col = box.column(align=True)
-            width = max(10, int(context.region.width / 7))
-            for line in props.response.split("\n"):
-                wrapped = textwrap.wrap(line, width=width, replace_whitespace=False) or [""]
-                for w in wrapped:
-                    col.label(text=w)
-            if api.extract_python_code(props.response):
-                layout.operator("gemini.execute_code", icon='SCRIPT')
-                layout.label(text="Review the code first · Ctrl+Z undoes it", icon='INFO')
+            _wrapped(box, props.prompt, width - 2)
+        sub = layout.row()
+        sub.scale_y = 1.3
+        sub.enabled = not props.busy
+        sub.operator("gemini.send_prompt", text="Thinking…" if props.busy else "Send to Gemini", icon='TIME' if props.busy else 'PLAY')
+        if not props.response or props.busy:
+            return
+        code = api.extract_python_code(props.response)
+        if code:                                              # 1) the action first: Run code
+            run = layout.row()
+            run.scale_y = 1.6
+            run.alert = True
+            run.operator("gemini.execute_code", text="Run code in Blender", icon='SCRIPT')
+        row = layout.row(align=True)                          # 2) copy buttons
+        row.operator("gemini.copy", text="Copy answer", icon='COPYDOWN').what = 'ANSWER'
+        if code:
+            row.operator("gemini.copy", text="Copy code", icon='TEXT').what = 'CODE'
+        explanation = api.explanation_text(props.response)    # 3) Gemini's explanation
+        if explanation:
+            _wrapped(layout.box(), explanation, width)
+        if code:                                              # 4) the code, collapsed by default
+            box = layout.box()
+            n = code.count("\n") + 1
+            box.prop(props, "show_code", text=f"Code ({n} lines)", emboss=False,
+                     icon='TRIA_DOWN' if props.show_code else 'TRIA_RIGHT')
+            if props.show_code:
+                col = box.column(align=True)
+                col.scale_y = 0.8
+                for line in code.split("\n"):
+                    for w in (textwrap.wrap(line, width=width, replace_whitespace=False, drop_whitespace=False) or [""]):
+                        col.label(text=w)
+            layout.label(text="Review the code before running it · Ctrl+Z undoes it", icon='INFO')
